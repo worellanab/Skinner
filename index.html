@@ -23,6 +23,10 @@
     --gris: #e8edf2;
     --texto: #1a2535;
     --sombra: 0 4px 20px rgba(26,58,92,0.12);
+    --col-head-bg: #f0f5fa;
+    --row-break-bg: #fef9ec;
+    --row-break-fg: #b07d00;
+    --row-break-line: #f0d080;
   }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -435,101 +439,88 @@ text-transform: uppercase;
 
 
 /* ===== CONTROL BAR ===== */
-.controls {
-  width: 100%; max-width: 960px; margin: 0 auto 14px;
-  display: flex; gap: 8px; justify-content: flex-end;
-  animation: fadeDown 0.6s ease both;
-}
+.controls { width:100%; max-width:960px; margin:0 auto 14px; display:flex; gap:8px; justify-content:flex-end; animation: fadeDown 0.6s ease both; }
 .ctrl-btn {
-  border: 1px solid var(--gris) !important;
-  background: var(--blanco) !important;
-  color: var(--azul) !important;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px; font-weight: 600; letter-spacing: 0.3px;
-  padding: 9px 14px; border-radius: 12px; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  box-shadow: var(--sombra);
-  -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+  border:1px solid var(--gris) !important; background:var(--blanco) !important; color:var(--azul) !important;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.3px;
+  padding:9px 14px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+  box-shadow:var(--sombra); -webkit-tap-highlight-color:transparent; -webkit-appearance:none; appearance:none;
   transition: background 0.2s, transform 0.1s, color 0.2s;
 }
 .ctrl-btn:active { transform: scale(0.96); }
-.ctrl-btn.active { background: var(--acento) !important; color: #fff !important; border-color: var(--acento) !important; }
+.ctrl-btn.active { background:var(--acento) !important; color:#fff !important; border-color:var(--acento) !important; }
 
-/* ===== ROTATE HINT (compact + portrait) ===== */
-.rotate-hint { display: none; }
-body.compact .rotate-hint {
-  width: 100%; max-width: 960px; margin: 0 auto 10px;
-  background: #fff7e6; color: #b07d00; border: 1px dashed #f0d080;
-  border-radius: 10px; padding: 8px 12px; text-align: center;
-  font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+/* ===== FULL-SCREEN LANDSCAPE WEEK VIEW ("photo") ===== */
+.week-overlay { display:none; position:fixed; inset:0; z-index:10000; background:var(--fondo); overflow:hidden; }
+.week-overlay.open { display:block; }
+.week-close {
+  position:fixed; top:14px; right:14px; z-index:10010; width:42px; height:42px; border-radius:50%;
+  background:rgba(110,120,135,0.32) !important; color:#fff !important; border:none !important;
+  font-size:20px; font-weight:bold; line-height:1; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+  -webkit-tap-highlight-color:transparent; -webkit-appearance:none; appearance:none;
 }
-@media (orientation: landscape) { body.compact .rotate-hint { display: none !important; } }
-@media (orientation: portrait)  { body.compact .rotate-hint { display: block; } }
-
-/* ===== COMPACT MODE (whole week fits, landscape) ===== */
-body.compact .day-buttons { display: none; }
-body.compact .leyenda-wrapper { display: none; }
-body.compact { padding: 10px 6px; }
-body.compact .table-wrapper { overflow-x: hidden; border-radius: 10px; }
-body.compact table { min-width: 0; width: 100%; }
-body.compact thead tr th { font-size: 11px; padding: 7px 3px; letter-spacing: 0.5px; }
-body.compact thead tr th:first-child { min-width: 0; font-size: 10px; }
-body.compact td { font-size: 10px; padding: 5px 3px; }
-body.compact td:first-child { font-size: 9px; border-right-width: 2px; }
-body.compact .chip {
-  font-size: 9.5px; padding: 3px 6px; border-radius: 8px; letter-spacing: 0;
-  white-space: nowrap;
+.week-close:active { transform: scale(0.92); }
+.week-stage { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box; }
+/* Force landscape on a portrait device by rotating the stage */
+@media (orientation: portrait) {
+  .week-overlay.open .week-stage {
+    width:100vh; height:100vw; left:100vw; top:0;
+    transform: rotate(90deg); transform-origin: top left;
+  }
 }
-body.compact .row-break td, body.compact .row-almuerzo td, body.compact .row-salida td { font-size: 9px; padding: 4px 3px; }
-/* hide the duplicate right-hand time column to save width */
-body.compact thead tr th:last-child,
-body.compact tbody td:last-child { display: none; }
+#weekTable { width:100%; }
+#weekTable table { width:100%; border-collapse:collapse; table-layout:fixed; min-width:0; box-shadow:var(--sombra); border-radius:12px; overflow:hidden; }
+#weekTable th { background:var(--azul); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:1px; padding:9px 4px; text-align:center; }
+#weekTable th:first-child { background:#112844; width:13%; min-width:0; font-size:12px; }
+#weekTable td { padding:6px 4px; text-align:center; font-size:11.5px; border-bottom:1px solid var(--gris); color:var(--texto); vertical-align:middle; }
+#weekTable td:first-child { width:13%; font-weight:600; font-size:10px; color:var(--azul-claro); background:var(--col-head-bg) !important; border-right:2px solid var(--celeste); white-space:nowrap; }
+#weekTable .chip { display:inline-block; padding:3px 8px; border-radius:11px; font-size:11.5px; font-weight:600; letter-spacing:0; white-space:nowrap; }
+#weekTable .row-break td, #weekTable .row-almuerzo td { background:var(--row-break-bg) !important; color:var(--row-break-fg); font-weight:600; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; border-top:1.5px dashed var(--row-break-line); border-bottom:1.5px dashed var(--row-break-line); }
+#weekTable .row-salida td { background:var(--col-head-bg) !important; color:var(--azul); border-top:2px solid var(--celeste); }
+#weekTable td[colspan] { text-transform:uppercase; }
 
 /* ===== NIGHT MODE ===== */
 body.dark {
-  --azul: #7db4e0;
-  --azul-claro: #8fc1e8;
-  --celeste: #4a7fa3;
-  --fondo: #0f1722;
-  --blanco: #1a2533;
-  --gris: #2b3a4d;
-  --texto: #e2e8f0;
-  --sombra: 0 4px 20px rgba(0,0,0,0.45);
-  background: #0f1722;
+  --azul:#7db4e0; --azul-claro:#8fc1e8; --celeste:#4a7fa3;
+  --fondo:#0f1722; --blanco:#1a2533; --gris:#2b3a4d; --texto:#e2e8f0;
+  --sombra:0 4px 20px rgba(0,0,0,0.45);
+  --col-head-bg:#16202c; --row-break-bg:#2a2517; --row-break-fg:#e0b84d; --row-break-line:#5a4d1f;
+  background:#0f1722;
 }
-body.dark .colegio-nombre,
-body.dark .titulo-bloque h1 { color: #e8eef5; }
-body.dark .table-wrapper,
-body.dark .leyenda-wrapper,
-body.dark .day-card,
-body.dark .day-card-header { background: #1a2533; }
-body.dark td { color: #e2e8f0; border-bottom-color: #2b3a4d; }
-body.dark td:first-child { background: #16202c !important; color: #8fc1e8; border-right-color: #4a7fa3; }
-body.dark tbody tr:nth-child(even) td { background: #1e2a38; }
-body.dark tbody tr:hover td,
-body.dark tbody tr:nth-child(even):hover td { background: #25374a; }
-body.dark tbody td:last-child { background: #16202c !important; color: #8fc1e8 !important; border-left-color: #4a7fa3; }
-body.dark td[style*="64748b"] { color: #94a3b8 !important; }
-body.dark .row-break td,
-body.dark .row-almuerzo td { background: #2a2517 !important; color: #e0b84d; border-top-color: #5a4d1f; border-bottom-color: #5a4d1f; }
-body.dark .row-salida td { background: #16202c !important; color: #8fc1e8; border-top-color: #4a7fa3; }
-body.dark .day-card-header { border-bottom-color: #2b3a4d; }
-body.dark .day-card-header h2 { color: #e8eef5; }
-body.dark .day-close { background: #2b3a4d !important; color: #e8eef5 !important; }
-body.dark .day-row { background: #16202c; }
-body.dark .day-row.break-row { background: #2a2517; border-color: #5a4d1f; }
-body.dark .day-time { color: #8fc1e8; }
-body.dark .day-subject .break-label { color: #e0b84d; }
-body.dark .footer { color: #64748b; }
-body.dark .ctrl-btn { background: #1a2533 !important; color: #e2e8f0 !important; border-color: #2b3a4d !important; }
-body.dark .ctrl-btn.active { background: var(--acento) !important; color: #1a2533 !important; border-color: var(--acento) !important; }
+body.dark .colegio-nombre, body.dark .titulo-bloque h1 { color:#e8eef5; }
+body.dark .table-wrapper, body.dark .leyenda-wrapper, body.dark .day-card, body.dark .day-card-header { background:#1a2533; }
+body.dark td { color:#e2e8f0; border-bottom-color:#2b3a4d; }
+body.dark td:first-child { background:#16202c !important; color:#8fc1e8; border-right-color:#4a7fa3; }
+body.dark tbody tr:nth-child(even) td { background:#1e2a38; }
+body.dark tbody tr:hover td, body.dark tbody tr:nth-child(even):hover td { background:#25374a; }
+body.dark tbody td:last-child { background:#16202c !important; color:#8fc1e8 !important; border-left-color:#4a7fa3; }
+body.dark td[style*="64748b"] { color:#94a3b8 !important; }
+body.dark .row-break td, body.dark .row-almuerzo td { background:#2a2517 !important; color:#e0b84d; border-top-color:#5a4d1f; border-bottom-color:#5a4d1f; }
+body.dark .row-salida td { background:#16202c !important; color:#8fc1e8; border-top-color:#4a7fa3; }
+body.dark .day-card-header { border-bottom-color:#2b3a4d; }
+body.dark .day-card-header h2 { color:#e8eef5; }
+body.dark .day-close { background:#2b3a4d !important; color:#e8eef5 !important; }
+body.dark .day-row { background:#16202c; }
+body.dark .day-row.break-row { background:#2a2517; border-color:#5a4d1f; }
+body.dark .day-time { color:#8fc1e8; }
+body.dark .day-subject .break-label { color:#e0b84d; }
+body.dark .footer { color:#64748b; }
+body.dark .ctrl-btn { background:#1a2533 !important; color:#e2e8f0 !important; border-color:#2b3a4d !important; }
+body.dark .ctrl-btn.active { background:var(--acento) !important; color:#1a2533 !important; border-color:var(--acento) !important; }
 </style>
 </head>
 <body>
 
 <div class="controls">
   <button class="ctrl-btn" id="btnDark" onclick="toggleDark()">🌙 <span>Modo noche</span></button>
-  <button class="ctrl-btn" id="btnCompact" onclick="toggleCompact()">▦ <span>Modo compacto</span></button>
+  <button class="ctrl-btn" id="btnWeek" onclick="openWeek()">▦ <span>Ver semana</span></button>
+</div>
+
+<div class="week-overlay" id="weekOverlay">
+  <button class="week-close" onclick="closeWeek()" aria-label="Cerrar">✕</button>
+  <div class="week-stage"><div id="weekTable"></div></div>
 </div>
 
 <div class="day-buttons">
@@ -563,7 +554,6 @@ body.dark .ctrl-btn.active { background: var(--acento) !important; color: #1a253
 <span class="badge">Secundaria Baja A</span>
 </div>
 </div>
-<div class="rotate-hint">↻ Gira el teléfono a horizontal para ver toda la semana</div>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -804,30 +794,40 @@ function closeDay() {
   document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
 }
 
-function _saveModes() {
-  try {
-    localStorage.setItem('skinner_dark', document.body.classList.contains('dark') ? '1' : '0');
-    localStorage.setItem('skinner_compact', document.body.classList.contains('compact') ? '1' : '0');
-  } catch (e) {}
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  try { localStorage.setItem('skinner_dark', document.body.classList.contains('dark') ? '1' : '0'); } catch (e) {}
+  _updateDarkBtn();
 }
-function _updateModeBtns() {
+function _updateDarkBtn() {
   var d = document.body.classList.contains('dark');
-  var c = document.body.classList.contains('compact');
-  var bd = document.getElementById('btnDark');
-  var bc = document.getElementById('btnCompact');
-  if (bd) { bd.classList.toggle('active', d); bd.firstChild.nodeValue = d ? '\u2600\uFE0F ' : '\uD83C\uDF19 '; }
-  if (bc) bc.classList.toggle('active', c);
+  var b = document.getElementById('btnDark');
+  if (b) { b.classList.toggle('active', d); b.firstChild.nodeValue = d ? '\u2600\uFE0F ' : '\uD83C\uDF19 '; }
   var meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', d ? '#0f1722' : '#1a3a5c');
 }
-function toggleDark() { document.body.classList.toggle('dark'); _saveModes(); _updateModeBtns(); }
-function toggleCompact() { document.body.classList.toggle('compact'); _saveModes(); _updateModeBtns(); }
+function openWeek() {
+  var ov = document.getElementById('weekOverlay');
+  var host = document.getElementById('weekTable');
+  var src = document.querySelector('.table-wrapper table');
+  if (!src) return;
+  host.innerHTML = '';
+  var clone = src.cloneNode(true);
+  // drop the duplicate right-hand "Horario" column from every row
+  clone.querySelectorAll('tr').forEach(function (tr) {
+    if (tr.children.length) tr.removeChild(tr.children[tr.children.length - 1]);
+  });
+  host.appendChild(clone);
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeWeek() {
+  document.getElementById('weekOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
 (function () {
-  try {
-    if (localStorage.getItem('skinner_dark') === '1') document.body.classList.add('dark');
-    if (localStorage.getItem('skinner_compact') === '1') document.body.classList.add('compact');
-  } catch (e) {}
-  _updateModeBtns();
+  try { if (localStorage.getItem('skinner_dark') === '1') document.body.classList.add('dark'); } catch (e) {}
+  _updateDarkBtn();
 })();
 </script>
 
