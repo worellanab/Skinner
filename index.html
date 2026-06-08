@@ -466,8 +466,8 @@ text-transform: uppercase;
 /* Force landscape on a portrait device by rotating the stage */
 @media (orientation: portrait) {
   .week-overlay.open .week-stage {
-    width:100vh; height:100vw; left:100vw; top:0;
-    transform: rotate(90deg); transform-origin: top left;
+    width:100vh; height:100vw; left:0; top:100vh;
+    transform: rotate(-90deg); transform-origin: top left;
   }
 }
 #weekTable { width:100%; }
